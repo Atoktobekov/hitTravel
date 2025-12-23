@@ -40,20 +40,20 @@ class _RootPageState extends State<RootPage> {
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: Icon(Icons.search),
+            label: 'Поиск',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
-            label: 'Favorites',
+            label: 'Избранные',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book_online),
-            label: 'My Bookings',
+            label: 'Мои заказы',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Profile',
+            label: 'Профиль',
           ),
         ],
       ),
