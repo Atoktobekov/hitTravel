@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Чтобы избежать проблем с клавиатурой, если появятся текстовые поля
+      // to avoid keyboard overlap
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
             bottom: false,
             child: Stack(
               children: [
-                // content on top
+              // stories and category selector
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -70,19 +70,22 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
 
-                // search form at bottom
+                // form and whatsapp
                 Positioned(
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  child: _buildSearchForm(),
-                ),
-
-                // WhatsApp — above search form
-                Positioned(
-                  right: 14.w,
-                  bottom: 335.h + 70.h,
-                  child: _buildFloatingWhatsAppContent(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(right: 14.w, bottom: 10.h),
+                        child: _buildFloatingWhatsAppContent(),
+                      ),
+                      _buildSearchForm(),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -139,7 +142,7 @@ class _HomePageState extends State<HomePage> {
       margin: EdgeInsets.symmetric(horizontal: 4.w),
       padding: EdgeInsets.all(2.h),
       decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.10),
+        color: Colors.black.withValues(alpha: 0.26),
         borderRadius: BorderRadius.circular(24.r),
       ),
       child: Row(
@@ -169,7 +172,7 @@ class _HomePageState extends State<HomePage> {
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                   color: isSelected
                       ? const Color(0xFF0A2540)
-                      : Colors.white.withAlpha(220),
+                      : Colors.white,
                 ),
               ),
             ),
@@ -325,7 +328,9 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Divider(height: 1, color: const Color(0xFF0073F7).withAlpha(70)),
-          SizedBox(height: MediaQuery.of(context).padding.bottom),
+          SizedBox(height: MediaQuery.of(context).padding.bottom > 0
+              ? MediaQuery.of(context).padding.bottom
+              : 8.h),
         ],
       ),
     );
