@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
     stories = List.generate(
       6,
       (i) => StoryItem(
-        avatarUrl: 'https://i.pravatar.cc/150?u=$i',
+        thumbnailUrl: 'https://i.pravatar.cc/150?u=$i',
         videoUrl:
             'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
       ),
@@ -116,13 +116,16 @@ class _HomePageState extends State<HomePage> {
               margin: EdgeInsets.only(right: 12.w),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: story.isViewed
-                    ? null
-                    : Border.all(color: Color(0xFF0073F7), width: 2.5),
+                border: Border.all(
+                  color: story.isViewed
+                      ? Colors.transparent
+                      : const Color(0xFF0073F7),
+                  width: 2.5,
+                ),
               ),
               child: CircleAvatar(
                 radius: 30.r,
-                backgroundImage: NetworkImage(story.avatarUrl),
+                backgroundImage: NetworkImage(story.thumbnailUrl),
               ),
             ),
           );

@@ -1,10 +1,10 @@
 class StoryItem {
-  final String avatarUrl;
+  final String thumbnailUrl;
   final String videoUrl;
   bool isViewed;
 
   StoryItem({
-    required this.avatarUrl,
+    required this.thumbnailUrl,
     required this.videoUrl,
     this.isViewed = false,
   });
