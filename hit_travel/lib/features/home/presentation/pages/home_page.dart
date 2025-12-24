@@ -57,24 +57,37 @@ class _HomePageState extends State<HomePage> {
 
           // Контент
           SafeArea(
+            bottom: false,
             child: Stack(
               children: [
+                // content on top
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _buildStories(),
                     SizedBox(height: 4.h),
                     _buildCategorySelector(),
-                    SizedBox(height: 12.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w),
-                      child: _buildSearchForm(),
-                    ),
                   ],
                 ),
-                _buildFloatingWhatsApp(),
+
+                // search form at bottom
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: _buildSearchForm(),
+                ),
+
+                // WhatsApp — above search form
+                Positioned(
+                  right: 14.w,
+                  bottom: 335.h + 70.h,
+                  child: _buildFloatingWhatsAppContent(),
+                ),
               ],
             ),
           ),
+
         ],
       ),
 
@@ -155,8 +168,8 @@ class _HomePageState extends State<HomePage> {
                   fontSize: 12.sp,
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                   color: isSelected
-                      ? const Color(0xFF0A2540) // тёмно-синий, не чёрный
-                      : Colors.white.withOpacity(0.9),
+                      ? const Color(0xFF0A2540)
+                      : Colors.white.withAlpha(220),
                 ),
               ),
             ),
@@ -171,12 +184,12 @@ class _HomePageState extends State<HomePage> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(18.r),
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(18.r), topRight: Radius.circular(18.r)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 20,
-            offset: const Offset(0, 10),
+            offset: const Offset(0, -4),
           ),
         ],
       ),
@@ -311,6 +324,8 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+          Divider(height: 1, color: const Color(0xFF0073F7).withAlpha(70)),
+          SizedBox(height: MediaQuery.of(context).padding.bottom),
         ],
       ),
     );
@@ -383,42 +398,40 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildVerticalDivider() =>
       Container(width: 1, height: 40.h, color: const Color(0xFF0073F7).withAlpha(70));
+  
 
-  Widget _buildFloatingWhatsApp() {
-    return Positioned(
-      bottom: 20.h,
-      right: 16.w,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-        decoration: BoxDecoration(
-          color: const Color(0xFF25D366),
-          borderRadius: BorderRadius.circular(30.r),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+  Widget _buildFloatingWhatsAppContent() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFF25D366),
+        borderRadius: BorderRadius.circular(30.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FaIcon(FontAwesomeIcons.whatsapp, color: Colors.white, size: 22.sp),
+          SizedBox(width: 8.w),
+          Text(
+            'Чат с поддержкой',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 13.sp,
             ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            FaIcon(FontAwesomeIcons.whatsapp, color: Colors.white, size: 22.sp),
-            SizedBox(width: 8.w),
-            Text(
-              'Чат с поддержкой',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 13.sp,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
+
 }
 
 

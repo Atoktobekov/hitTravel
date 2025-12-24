@@ -14,7 +14,7 @@ class AppTheme{
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: Colors.white,
       selectedItemColor: Colors.blue,
-      unselectedItemColor: Colors.grey.shade600,
+      unselectedItemColor: Colors.black87,
     ),
     iconTheme: IconThemeData(color: Colors.blue),
     primaryIconTheme: IconThemeData(color: Colors.blue),
