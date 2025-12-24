@@ -10,108 +10,96 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int selectedAvatarIndex = 2;
+  int selectedAvatarIndex = 0;
   bool isCharterOnly = false;
   int hotelClass = 1;
   int selectedCategoryIndex = 0;
-  final List<String> categories = ['Авиабилеты', 'Поиск туров', 'Авторские туры', 'Отели'];
-
-  // Начальная позиция кнопки (справа внизу)
-  Offset buttonPosition = Offset(180.w, 600.h);
+  final List<String> categories = [
+    'Поиск туров',
+    'Авиабилеты',
+    'Отели',
+    'Авторские туры',
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
-      body: SafeArea(
-        child: Stack(
-          children: [
-            // Основной контент
-            Column(
-              children: [
-                _buildAvatarSelector(),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: _buildCategorySelector(),
+      body: Container(
+        // gradient background
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.white, Colors.lightBlue, Colors.white],
+            stops: const [0.0, 0.3, 1.0],
+          ),
+        ),
+        child: SafeArea(
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _buildAvatarSelector(),
+                    SizedBox(height: 10.h),
+                    _buildCategorySelector(),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: _buildSearchForm(),
+                    ),
+                    SizedBox(height: 100.h), // Отступ под кнопку
+                  ],
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: _buildSearchForm(),
-                ),
-              ],
-            ),
-
-            // Перетаскиваемая кнопка WhatsApp
-            Positioned(
-              left: buttonPosition.dx,
-              top: buttonPosition.dy,
-              child: Draggable(
-                feedback: Material(
-                  color: Colors.transparent,
-                  child: _buildWhatsAppButtonContent(opacity: 0.7),
-                ),
-                childWhenDragging: Container(),
-                onDragEnd: (details) {
-                  setState(() {
-                    // Вычитаем SafeArea top, если нужно идеальное позиционирование
-                    buttonPosition = Offset(details.offset.dx, details.offset.dy - MediaQuery.of(context).padding.top);
-                  });
-                },
-                child: _buildWhatsAppButtonContent(),
               ),
-            ),
-          ],
+              _buildFloatingWhatsApp(),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildAvatarSelector() {
-    final avatars = ['👨‍🦱', '🧔', '🤠', '😎', '🕶️'];
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.symmetric(vertical: 8.h),
-      child: SizedBox(
-        height: 70.h,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: avatars.length,
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          itemBuilder: (context, index) {
-            final isSelected = selectedAvatarIndex == index;
-            return GestureDetector(
-              onTap: () => setState(() => selectedAvatarIndex = index),
-              child: Container(
-                margin: EdgeInsets.only(right: 12.w),
-                width: 54.h,
-                height: 54.h,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: isSelected ? Colors.blue : Colors.grey[300]!,
-                    width: 2,
-                  ),
-                  color: Colors.grey[200],
-                ),
-                child: Center(
-                  child: Text(avatars[index], style: TextStyle(fontSize: 26.sp)),
+    return SizedBox(
+      height: 100.h,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 5,
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        itemBuilder: (context, index) {
+          final isSelected = selectedAvatarIndex == index;
+          return GestureDetector(
+            onTap: () => setState(() => selectedAvatarIndex = index),
+            child: Container(
+              margin: EdgeInsets.only(right: 12.w),
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isSelected
+                      ? Colors.blue
+                      : Colors.white.withOpacity(0.5),
+                  width: 2,
                 ),
               ),
-            );
-          },
-        ),
+              child: CircleAvatar(
+                radius: 35.r,
+                backgroundColor: Colors.white,
+                backgroundImage: NetworkImage(
+                  'https://i.pravatar.cc/150?u=$index',
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
   Widget _buildCategorySelector() {
     return Container(
-      height: 38.h,
-      margin: EdgeInsets.symmetric(vertical: 10.h),
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(20.r),
-      ),
+      height: 44.h,
+      margin: EdgeInsets.only(bottom: 20.h, left: 16.w, right: 16.w),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
@@ -120,20 +108,33 @@ class _HomePageState extends State<HomePage> {
           return GestureDetector(
             onTap: () => setState(() => selectedCategoryIndex = index),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              margin: const EdgeInsets.all(3),
-              padding: EdgeInsets.symmetric(horizontal: 14.w),
+              duration: const Duration(milliseconds: 250),
+              margin: EdgeInsets.only(right: 8.w),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
               decoration: BoxDecoration(
-                color: isSelected ? Colors.white : Colors.transparent,
-                borderRadius: BorderRadius.circular(18.r),
+                color: isSelected
+                    ? Colors.white
+                    : Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(22.r),
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 2,
+                          offset: Offset(0,1),
+                        ),
+                      ]
+                    : [],
               ),
               alignment: Alignment.center,
               child: Text(
                 categories[index],
                 style: TextStyle(
-                  color: isSelected ? Colors.black : Colors.white,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  fontSize: 11.sp,
+                  color: isSelected
+                      ? Colors.black87
+                      : Colors.white.withOpacity(0.9),
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                  fontSize: 13.sp,
                 ),
               ),
             ),
@@ -145,83 +146,135 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildSearchForm() {
     return Container(
-      padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(28.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
-          _buildInputField(label: 'Город вылета', value: 'Бишкек', icon: Icons.flight_takeoff),
-          SizedBox(height: 8.h),
-          _buildInputField(label: 'Страна, курорт, отель', value: 'Турция', icon: Icons.flight_land),
-          SizedBox(height: 8.h),
+          // Блок вылета и назначения с вертикальной линией
+          Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Stack(
+              children: [
+                Positioned(
+                  right: 12.w,
+                  top: 25.h,
+                  bottom: 25.h,
+                  child: CustomPaint(painter: DashLinePainter()),
+                ),
+                Column(
+                  children: [
+                    _buildFormRow('Город вылета', 'Бишкек', Icons.location_on),
+                    Divider(
+                      height: 32.h,
+                      thickness: 1,
+                      color: Colors.grey.shade100,
+                    ),
+                    _buildFormRow(
+                      'Страна, курорт, отель',
+                      'Турция',
+                      Icons.location_on,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Divider(height: 1, color: Colors.grey.shade100),
+          // Сетка параметров
           Row(
             children: [
-              Expanded(child: _buildInputField(label: 'Дата вылета', value: '23.12 - 23.12')),
-              SizedBox(width: 8.w),
-              Expanded(child: _buildInputField(label: 'На сколько', value: '6 - 14 ночей')),
+              _buildGridItem('Дата вылета', '23.12 - 23.12', flex: 1),
+              _buildVerticalDivider(),
+              _buildGridItem('На сколько', '6 - 14 ночей', flex: 1),
             ],
           ),
-          SizedBox(height: 8.h),
+          Divider(height: 1, color: Colors.grey.shade100),
           Row(
             children: [
-              Expanded(child: _buildInputField(label: 'Кто летит', value: '2 взрослых', icon: Icons.person)),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              _buildGridItem('Кто летит', '2 взрослых', flex: 1),
+              _buildVerticalDivider(),
+              _buildGridItemWidget(
+                'Только чартер',
+                Row(
                   children: [
-                    Text('Только чартер', style: TextStyle(fontSize: 10.sp, color: Colors.grey[600])),
                     SizedBox(
-                      height: 32.h, // Ограничиваем высоту, чтобы Checkbox не раздувал форму
+                      width: 24.w,
                       child: Checkbox(
                         value: isCharterOnly,
-                        activeColor: Colors.blue,
-                        onChanged: (v) => setState(() => isCharterOnly = v ?? false),
+                        onChanged: (v) => setState(() => isCharterOnly = v!),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      'Выключено',
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
+                flex: 1,
               ),
             ],
           ),
-          SizedBox(height: 8.h),
+          Divider(height: 1, color: Colors.grey.shade100),
           Row(
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Класс отеля', style: TextStyle(fontSize: 10.sp, color: Colors.grey[600])),
-                    Row(
-                      children: List.generate(5, (i) => Icon(Icons.star, size: 16.sp, color: i < hotelClass ? Colors.amber : Colors.grey[300])),
+              _buildGridItemWidget(
+                'Класс отеля',
+                Row(
+                  children: List.generate(
+                    5,
+                    (i) => Icon(
+                      Icons.star,
+                      size: 18.sp,
+                      color: i < 1 ? Colors.amber : Colors.grey.shade300,
                     ),
-                  ],
+                  ),
                 ),
+                flex: 1,
               ),
-              Expanded(child: _buildInputField(label: 'Питание', value: 'Любое')),
+              _buildVerticalDivider(),
+              _buildGridItem('Питание', 'Любое', flex: 1),
             ],
           ),
-          SizedBox(height: 14.h),
-          SizedBox(
-            width: double.infinity,
-            height: 42.h,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+          // Кнопка
+          Padding(
+            padding: EdgeInsets.all(16.w),
+            child: SizedBox(
+              width: double.infinity,
+              height: 54.h,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0073F7),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.r),
+                  ),
+                  elevation: 0,
+                ),
+                child: Text(
+                  'Найти туры',
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
-              child: Text('Найти туры', style: TextStyle(fontSize: 14.sp, color: Colors.white)),
             ),
           ),
         ],
@@ -229,58 +282,103 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildInputField({required String label, required String value, IconData? icon}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildFormRow(String label, String value, IconData icon) {
+    return Row(
       children: [
-        Text(label, style: TextStyle(fontSize: 10.sp, color: Colors.grey[600])),
-        SizedBox(height: 4.h),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey[200]!),
-            borderRadius: BorderRadius.circular(8.r),
-          ),
-          child: Row(
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: Text(value, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500))),
-              if (icon != null) Icon(icon, color: Colors.blue, size: 14.sp),
+              Text(
+                label,
+                style: TextStyle(fontSize: 11.sp, color: Colors.grey.shade500),
+              ),
+              SizedBox(height: 4.h),
+              Text(
+                value,
+                style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
+              ),
             ],
           ),
         ),
+        Icon(icon, color: const Color(0xFF0073F7), size: 24.sp),
       ],
     );
   }
 
-  Widget _buildWhatsAppButtonContent({double opacity = 1.0}) {
-    return Opacity(
-      opacity: opacity,
+  Widget _buildGridItem(String label, String value, {int flex = 1}) {
+    return Expanded(
+      flex: flex,
+      child: Padding(
+        padding: EdgeInsets.all(16.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: TextStyle(fontSize: 11.sp, color: Colors.grey.shade500),
+            ),
+            SizedBox(height: 4.h),
+            Text(
+              value,
+              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGridItemWidget(String label, Widget child, {int flex = 1}) {
+    return Expanded(
+      flex: flex,
+      child: Padding(
+        padding: EdgeInsets.all(16.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: TextStyle(fontSize: 11.sp, color: Colors.grey.shade500),
+            ),
+            SizedBox(height: 4.h),
+            child,
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVerticalDivider() =>
+      Container(width: 1, height: 50.h, color: Colors.grey.shade100);
+
+  Widget _buildFloatingWhatsApp() {
+    return Positioned(
+      bottom: 20.h,
+      right: 16.w,
       child: Container(
-        width: 160.w,
-        height: 44.h,
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
         decoration: BoxDecoration(
           color: const Color(0xFF25D366),
-          borderRadius: BorderRadius.circular(22.r),
+          borderRadius: BorderRadius.circular(30.r),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            )
+              color: Colors.black26,
+              blurRadius: 10,
+              offset: Offset(0, 4),
+            ),
           ],
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FaIcon(FontAwesomeIcons.whatsapp, color: Colors.white, size: 18.sp),
+            FaIcon(FontAwesomeIcons.whatsapp, color: Colors.white, size: 20.sp),
             SizedBox(width: 8.w),
             Text(
               'Чат с поддержкой',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 12.sp,
                 fontWeight: FontWeight.bold,
-                decoration: TextDecoration.none, // Чтобы не было желтых линий при Draggable
+                fontSize: 13.sp,
               ),
             ),
           ],
@@ -288,4 +386,22 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+// Отрисовка пунктирной линии между иконками геолокации
+class DashLinePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    double dashHeight = 5, dashSpace = 3, startY = 0;
+    final paint = Paint()
+      ..color = Colors.blue.shade200
+      ..strokeWidth = 1.5;
+    while (startY < size.height) {
+      canvas.drawLine(Offset(0, startY), Offset(0, startY + dashHeight), paint);
+      startY += dashHeight + dashSpace;
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

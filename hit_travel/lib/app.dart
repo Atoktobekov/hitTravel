@@ -18,6 +18,7 @@ class HitTravelApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: AppTheme.light,
           home: child,
+
         );
       },
       child: const RootPage(),
