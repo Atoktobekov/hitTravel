@@ -1,6 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hit_travel/features/home/domain/entities/story_item.dart';
+import 'package:hit_travel/features/home/presentation/pages/story_video_page.dart';
+import 'package:hit_travel/shared/presentation/widgets/dash_line_painter.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,6 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late List<StoryItem> stories;
   int selectedAvatarIndex = 0;
   bool isCharterOnly = false;
   int hotelClass = 1;
@@ -22,10 +28,24 @@ class _HomePageState extends State<HomePage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    stories = List.generate(
+      6,
+          (i) => StoryItem(
+        avatarUrl: 'https://i.pravatar.cc/150?u=$i',
+        videoUrl:
+        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Чтобы избежать проблем с клавиатурой, если появятся текстовые поля
+      resizeToAvoidBottomInset: false,
       body: Container(
-        // gradient background
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -37,19 +57,17 @@ class _HomePageState extends State<HomePage> {
         child: SafeArea(
           child: Stack(
             children: [
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _buildAvatarSelector(),
-                    SizedBox(height: 10.h),
-                    _buildCategorySelector(),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: _buildSearchForm(),
-                    ),
-                    SizedBox(height: 100.h), // Отступ под кнопку
-                  ],
-                ),
+              Column(
+                children: [
+                  _buildStories(),
+                  SizedBox(height: 4.h),
+                  _buildCategorySelector(),
+                  SizedBox(height: 12.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.w),
+                    child: _buildSearchForm(),
+                  ),
+                ],
               ),
               _buildFloatingWhatsApp(),
             ],
@@ -59,35 +77,38 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildAvatarSelector() {
+  Widget _buildStories() {
     return SizedBox(
-      height: 100.h,
+      height: 96.h,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 5,
         padding: EdgeInsets.symmetric(horizontal: 16.w),
+        itemCount: stories.length,
         itemBuilder: (context, index) {
-          final isSelected = selectedAvatarIndex == index;
+          final story = stories[index];
+
           return GestureDetector(
-            onTap: () => setState(() => selectedAvatarIndex = index),
+            onTap: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => StoryVideoPage(videoUrl: story.videoUrl),
+                ),
+              );
+              setState(() => story.isViewed = true);
+            },
             child: Container(
               margin: EdgeInsets.only(right: 12.w),
-              padding: const EdgeInsets.all(2),
+              padding: EdgeInsets.all(story.isViewed ? 0 : 2),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: isSelected
-                      ? Colors.blue
-                      : Colors.white.withOpacity(0.5),
-                  width: 2,
-                ),
+                border: story.isViewed
+                    ? null
+                    : Border.all(color: Colors.blue, width: 2),
               ),
               child: CircleAvatar(
-                radius: 35.r,
-                backgroundColor: Colors.white,
-                backgroundImage: NetworkImage(
-                  'https://i.pravatar.cc/150?u=$index',
-                ),
+                radius: 32.r,
+                backgroundImage: NetworkImage(story.avatarUrl),
               ),
             ),
           );
@@ -98,85 +119,94 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildCategorySelector() {
     return Container(
-      height: 44.h,
-      margin: EdgeInsets.only(bottom: 20.h, left: 16.w, right: 16.w),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          bool isSelected = selectedCategoryIndex == index;
+      height: 46.h,
+      margin: EdgeInsets.symmetric(horizontal: 4.w),
+      padding: EdgeInsets.all(2.h),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(24.r),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: List.generate(categories.length, (index) {
+          final isSelected = selectedCategoryIndex == index;
+
           return GestureDetector(
-            onTap: () => setState(() => selectedCategoryIndex = index),
+            onTap: () {
+              setState(() => selectedCategoryIndex = index);
+              // TODO handle selection logic
+              log('Selected: ${categories[index]}');
+            },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 250),
-              margin: EdgeInsets.only(right: 8.w),
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+              curve: Curves.decelerate,
+              alignment: Alignment.center,
+              padding: EdgeInsets.symmetric(horizontal: 10.w),
               decoration: BoxDecoration(
-                color: isSelected
-                    ? Colors.white
-                    : Colors.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(22.r),
+                color: isSelected ? Colors.white : Colors.transparent,
+                borderRadius: BorderRadius.circular(24.r),
                 boxShadow: isSelected
                     ? [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 2,
-                          offset: Offset(0,1),
-                        ),
-                      ]
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  )
+                ]
                     : [],
               ),
-              alignment: Alignment.center,
               child: Text(
                 categories[index],
                 style: TextStyle(
-                  color: isSelected
-                      ? Colors.black87
-                      : Colors.white.withOpacity(0.9),
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                  fontSize: 13.sp,
+                  fontSize: 12.sp,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                  color: isSelected ? Colors.black87 : Colors.white,
                 ),
               ),
             ),
           );
-        },
+        }),
       ),
     );
   }
+
 
   Widget _buildSearchForm() {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(28.r),
+        borderRadius: BorderRadius.circular(22.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
         ],
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min, // important for non-scroll
         children: [
-          // Блок вылета и назначения с вертикальной линией
           Padding(
             padding: EdgeInsets.all(16.w),
             child: Stack(
               children: [
                 Positioned(
                   right: 12.w,
-                  top: 25.h,
-                  bottom: 25.h,
+                  top: 20.h,
+                  bottom: 20.h,
                   child: CustomPaint(painter: DashLinePainter()),
                 ),
                 Column(
                   children: [
                     _buildFormRow('Город вылета', 'Бишкек', Icons.location_on),
-                    Divider(
-                      height: 32.h,
-                      thickness: 1,
-                      color: Colors.grey.shade100,
+                    Padding(
+                      padding: EdgeInsets.only(left: 1.w, right: 19.w),
+                      child: Divider(
+                        height: 26.h,
+                        thickness: 1,
+                        color: Colors.grey.shade100,
+                      ),
                     ),
                     _buildFormRow(
                       'Страна, курорт, отель',
@@ -188,19 +218,24 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          Divider(height: 1, color: Colors.grey.shade100),
-          // Сетка параметров
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Divider(height: 1, color: Colors.grey.shade100),
+          ),
           Row(
             children: [
-              _buildGridItem('Дата вылета', '23.12 - 23.12', flex: 1),
+              _buildGridItem('Дата вылета', '23.12 - 23.12'),
               _buildVerticalDivider(),
-              _buildGridItem('На сколько', '6 - 14 ночей', flex: 1),
+              _buildGridItem('На сколько', '6 - 14 ночей'),
             ],
           ),
-          Divider(height: 1, color: Colors.grey.shade100),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Divider(height: 1, color: Colors.grey.shade100),
+          ),
           Row(
             children: [
-              _buildGridItem('Кто летит', '2 взрослых', flex: 1),
+              _buildGridItem('Кто летит', '2 взрослых'),
               _buildVerticalDivider(),
               _buildGridItemWidget(
                 'Только чартер',
@@ -208,6 +243,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     SizedBox(
                       width: 24.w,
+                      height: 24.h,
                       child: Checkbox(
                         value: isCharterOnly,
                         onChanged: (v) => setState(() => isCharterOnly = v!),
@@ -218,19 +254,21 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(width: 8.w),
                     Text(
-                      'Выключено',
+                      isCharterOnly ? 'Включено' : 'Выключено',
                       style: TextStyle(
-                        fontSize: 13.sp,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
-                flex: 1,
               ),
             ],
           ),
-          Divider(height: 1, color: Colors.grey.shade100),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Divider(height: 1, color: Colors.grey.shade100),
+          ),
           Row(
             children: [
               _buildGridItemWidget(
@@ -245,18 +283,16 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                flex: 1,
               ),
               _buildVerticalDivider(),
-              _buildGridItem('Питание', 'Любое', flex: 1),
+              _buildGridItem('Питание', 'Любое'),
             ],
           ),
-          // Кнопка
           Padding(
-            padding: EdgeInsets.all(16.w),
+            padding: EdgeInsets.all(14.w),
             child: SizedBox(
               width: double.infinity,
-              height: 54.h,
+              height: 50.h,
               child: ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
@@ -269,7 +305,7 @@ class _HomePageState extends State<HomePage> {
                 child: Text(
                   'Найти туры',
                   style: TextStyle(
-                    fontSize: 16.sp,
+                    fontSize: 15.sp,
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
@@ -291,37 +327,36 @@ class _HomePageState extends State<HomePage> {
             children: [
               Text(
                 label,
-                style: TextStyle(fontSize: 11.sp, color: Colors.grey.shade500),
+                style: TextStyle(fontSize: 12.sp, color: Colors.grey.shade500),
               ),
-              SizedBox(height: 4.h),
+              SizedBox(height: 2.h),
               Text(
                 value,
-                style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
               ),
             ],
           ),
         ),
-        Icon(icon, color: const Color(0xFF0073F7), size: 24.sp),
+        Icon(icon, color: const Color(0xFF0073F7), size: 22.sp),
       ],
     );
   }
 
-  Widget _buildGridItem(String label, String value, {int flex = 1}) {
+  Widget _buildGridItem(String label, String value) {
     return Expanded(
-      flex: flex,
       child: Padding(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               label,
-              style: TextStyle(fontSize: 11.sp, color: Colors.grey.shade500),
+              style: TextStyle(fontSize: 12.sp, color: Colors.grey.shade500),
             ),
-            SizedBox(height: 4.h),
+            SizedBox(height: 2.h),
             Text(
               value,
-              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500),
             ),
           ],
         ),
@@ -329,19 +364,18 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildGridItemWidget(String label, Widget child, {int flex = 1}) {
+  Widget _buildGridItemWidget(String label, Widget child) {
     return Expanded(
-      flex: flex,
       child: Padding(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               label,
-              style: TextStyle(fontSize: 11.sp, color: Colors.grey.shade500),
+              style: TextStyle(fontSize: 12.sp, color: Colors.grey.shade500),
             ),
-            SizedBox(height: 4.h),
+            SizedBox(height: 2.h),
             child,
           ],
         ),
@@ -350,7 +384,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildVerticalDivider() =>
-      Container(width: 1, height: 50.h, color: Colors.grey.shade100);
+      Container(width: 1, height: 40.h, color: Colors.grey.shade100);
 
   Widget _buildFloatingWhatsApp() {
     return Positioned(
@@ -363,15 +397,16 @@ class _HomePageState extends State<HomePage> {
           borderRadius: BorderRadius.circular(30.r),
           boxShadow: [
             BoxShadow(
-              color: Colors.black26,
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 10,
-              offset: Offset(0, 4),
+              offset: const Offset(0, 4),
             ),
           ],
         ),
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            FaIcon(FontAwesomeIcons.whatsapp, color: Colors.white, size: 20.sp),
+            FaIcon(FontAwesomeIcons.whatsapp, color: Colors.white, size: 22.sp),
             SizedBox(width: 8.w),
             Text(
               'Чат с поддержкой',
@@ -388,20 +423,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-// Отрисовка пунктирной линии между иконками геолокации
-class DashLinePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    double dashHeight = 5, dashSpace = 3, startY = 0;
-    final paint = Paint()
-      ..color = Colors.blue.shade200
-      ..strokeWidth = 1.5;
-    while (startY < size.height) {
-      canvas.drawLine(Offset(0, startY), Offset(0, startY + dashHeight), paint);
-      startY += dashHeight + dashSpace;
-    }
-  }
 
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
-}
+
+
+

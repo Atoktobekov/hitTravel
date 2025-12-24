@@ -44,11 +44,11 @@ class _RootPageState extends State<RootPage> {
             label: 'Поиск',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
+            icon: Icon(Icons.favorite_border_outlined),
             label: 'Избранные',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.book_online),
+            icon: Icon(Icons.book_online_outlined),
             label: 'Мои заказы',
           ),
           BottomNavigationBarItem(
