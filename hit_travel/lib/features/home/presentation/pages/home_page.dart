@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:hit_travel/shared/presentation/widgets/divider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -234,10 +235,7 @@ class _HomePageState extends State<HomePage> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Divider(
-              height: 1,
-              color: const Color(0xFF0073F7).withAlpha(70),
-            ),
+            child: blueDivider
           ),
           Row(
             children: [
@@ -248,10 +246,7 @@ class _HomePageState extends State<HomePage> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Divider(
-              height: 1,
-              color: const Color(0xFF0073F7).withAlpha(70),
-            ),
+            child: blueDivider
           ),
           Row(
             children: [
@@ -290,10 +285,7 @@ class _HomePageState extends State<HomePage> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Divider(
-              height: 1,
-              color: const Color(0xFF0073F7).withAlpha(70),
-            ),
+            child: blueDivider
           ),
           Row(
             children: [
@@ -316,10 +308,7 @@ class _HomePageState extends State<HomePage> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Divider(
-              height: 1,
-              color: const Color(0xFF0073F7).withAlpha(70),
-            ),
+            child: blueDivider
           ),
           Padding(
             padding: EdgeInsets.all(14.w),
@@ -346,7 +335,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          Divider(height: 1, color: const Color(0xFF0073F7).withAlpha(70)),
+          blueDivider,
           SizedBox(
             height: MediaQuery.of(context).padding.bottom > 0
                 ? MediaQuery.of(context).padding.bottom
