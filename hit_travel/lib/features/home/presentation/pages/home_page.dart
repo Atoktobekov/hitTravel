@@ -1,5 +1,5 @@
 import 'dart:developer';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -32,10 +32,10 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     stories = List.generate(
       6,
-          (i) => StoryItem(
+      (i) => StoryItem(
         avatarUrl: 'https://i.pravatar.cc/150?u=$i',
         videoUrl:
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+            'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
       ),
     );
   }
@@ -49,18 +49,15 @@ class _HomePageState extends State<HomePage> {
         children: [
           // Фон
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/home_bg.jpeg',
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/images/home_bg.jpeg', fit: BoxFit.cover),
           ),
 
-          // Контент
+          // content
           SafeArea(
             bottom: false,
             child: Stack(
               children: [
-              // stories and category selector
+                // stories and category selector
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -90,10 +87,8 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-
         ],
       ),
-
     );
   }
 
@@ -170,9 +165,7 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-                  color: isSelected
-                      ? const Color(0xFF0A2540)
-                      : Colors.white,
+                  color: isSelected ? const Color(0xFF0A2540) : Colors.white,
                 ),
               ),
             ),
@@ -182,12 +175,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
   Widget _buildSearchForm() {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(18.r), topRight: Radius.circular(18.r)),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(18.r),
+          topRight: Radius.circular(18.r),
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
@@ -211,11 +206,15 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Column(
                   children: [
-                    _buildFormRow('Город вылета', 'Бишкек', Icons.location_on_outlined),
+                    _buildFormRow(
+                      'Город вылета',
+                      'Бишкек',
+                      Icons.location_on_outlined,
+                    ),
                     Padding(
                       padding: EdgeInsets.only(left: 1.w, right: 19.w),
                       child: Divider(
-                        height: 26.h,
+                        height: 24.h,
                         thickness: 1,
                         color: const Color(0xFF0073F7).withAlpha(70),
                       ),
@@ -232,7 +231,10 @@ class _HomePageState extends State<HomePage> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Divider(height: 1,  color: const Color(0xFF0073F7).withAlpha(70)),
+            child: Divider(
+              height: 1,
+              color: const Color(0xFF0073F7).withAlpha(70),
+            ),
           ),
           Row(
             children: [
@@ -243,7 +245,10 @@ class _HomePageState extends State<HomePage> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Divider(height: 1, color: const Color(0xFF0073F7).withAlpha(70)),
+            child: Divider(
+              height: 1,
+              color: const Color(0xFF0073F7).withAlpha(70),
+            ),
           ),
           Row(
             children: [
@@ -258,7 +263,8 @@ class _HomePageState extends State<HomePage> {
                       height: 24.h,
                       child: Checkbox(
                         value: isCharterOnly,
-                        onChanged: (v) => setState(() => isCharterOnly = v!),
+                        onChanged: (value) =>
+                            setState(() => isCharterOnly = value!),
                         side: BorderSide(color: Colors.grey.shade400, width: 1),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4),
@@ -281,7 +287,10 @@ class _HomePageState extends State<HomePage> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Divider(height: 1, color: const Color(0xFF0073F7).withAlpha(70)),
+            child: Divider(
+              height: 1,
+              color: const Color(0xFF0073F7).withAlpha(70),
+            ),
           ),
           Row(
             children: [
@@ -301,6 +310,13 @@ class _HomePageState extends State<HomePage> {
               _buildVerticalDivider(),
               _buildGridItem('Питание', 'Любое'),
             ],
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Divider(
+              height: 1,
+              color: const Color(0xFF0073F7).withAlpha(70),
+            ),
           ),
           Padding(
             padding: EdgeInsets.all(14.w),
@@ -328,9 +344,11 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Divider(height: 1, color: const Color(0xFF0073F7).withAlpha(70)),
-          SizedBox(height: MediaQuery.of(context).padding.bottom > 0
-              ? MediaQuery.of(context).padding.bottom
-              : 8.h),
+          SizedBox(
+            height: MediaQuery.of(context).padding.bottom > 0
+                ? MediaQuery.of(context).padding.bottom
+                : 8.h,
+          ),
         ],
       ),
     );
@@ -401,13 +419,20 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildVerticalDivider() =>
-      Container(width: 1, height: 40.h, color: const Color(0xFF0073F7).withAlpha(70));
-  
+  Widget _buildVerticalDivider() => Container(
+    width: 1,
+    height: 40.h,
+    color: const Color(0xFF0073F7).withAlpha(70),
+  );
 
   Widget _buildFloatingWhatsAppContent() {
+    final Uri whatsappUri = Uri.parse('https://wa.me/996700636676').replace(
+      queryParameters: {
+        'text': 'Здравствуйте!\n\nПишу из приложения Hit Travel\n\n',
+      },
+    );
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
       decoration: BoxDecoration(
         color: const Color(0xFF25D366),
         borderRadius: BorderRadius.circular(30.r),
@@ -419,27 +444,45 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FaIcon(FontAwesomeIcons.whatsapp, color: Colors.white, size: 22.sp),
-          SizedBox(width: 8.w),
-          Text(
-            'Чат с поддержкой',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-              fontSize: 13.sp,
+      // use material to make it work
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () async {
+            if (await canLaunchUrl(whatsappUri)) {
+              await launchUrl(
+                whatsappUri,
+                mode: LaunchMode.externalApplication,
+              );
+            } else {
+              log('WhatsApp not available');
+            }
+          },
+          borderRadius: BorderRadius.circular(30.r),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FaIcon(
+                  FontAwesomeIcons.whatsapp,
+                  color: Colors.white,
+                  size: 22.sp,
+                ),
+                SizedBox(width: 8.w),
+                Text(
+                  'Чат с поддержкой',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13.sp,
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
-
 }
-
-
-
-
-
