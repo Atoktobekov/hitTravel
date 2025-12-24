@@ -99,15 +99,14 @@ class _HomePageState extends State<HomePage> {
             },
             child: Container(
               margin: EdgeInsets.only(right: 12.w),
-              padding: EdgeInsets.all(story.isViewed ? 0 : 2),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: story.isViewed
                     ? null
-                    : Border.all(color: Colors.blue, width: 2),
+                    : Border.all(color: Color(0xFF0073F7), width: 2.5),
               ),
               child: CircleAvatar(
-                radius: 32.r,
+                radius: 30.r,
                 backgroundImage: NetworkImage(story.avatarUrl),
               ),
             ),
@@ -145,22 +144,15 @@ class _HomePageState extends State<HomePage> {
               decoration: BoxDecoration(
                 color: isSelected ? Colors.white : Colors.transparent,
                 borderRadius: BorderRadius.circular(24.r),
-                boxShadow: isSelected
-                    ? [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  )
-                ]
-                    : [],
               ),
               child: Text(
                 categories[index],
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-                  color: isSelected ? Colors.black87 : Colors.white,
+                  color: isSelected
+                      ? const Color(0xFF0A2540) // тёмно-синий, не чёрный
+                      : Colors.white.withOpacity(0.9),
                 ),
               ),
             ),
@@ -175,7 +167,7 @@ class _HomePageState extends State<HomePage> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(22.r),
+        borderRadius: BorderRadius.circular(18.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
@@ -193,25 +185,25 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Positioned(
                   right: 12.w,
-                  top: 20.h,
-                  bottom: 20.h,
+                  top: 36.h,
+                  bottom: 39.h,
                   child: CustomPaint(painter: DashLinePainter()),
                 ),
                 Column(
                   children: [
-                    _buildFormRow('Город вылета', 'Бишкек', Icons.location_on),
+                    _buildFormRow('Город вылета', 'Бишкек', Icons.location_on_outlined),
                     Padding(
                       padding: EdgeInsets.only(left: 1.w, right: 19.w),
                       child: Divider(
                         height: 26.h,
                         thickness: 1,
-                        color: Colors.grey.shade100,
+                        color: const Color(0xFF0073F7).withAlpha(70),
                       ),
                     ),
                     _buildFormRow(
                       'Страна, курорт, отель',
                       'Турция',
-                      Icons.location_on,
+                      Icons.location_on_outlined,
                     ),
                   ],
                 ),
@@ -220,7 +212,7 @@ class _HomePageState extends State<HomePage> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Divider(height: 1, color: Colors.grey.shade100),
+            child: Divider(height: 1,  color: const Color(0xFF0073F7).withAlpha(70)),
           ),
           Row(
             children: [
@@ -231,7 +223,7 @@ class _HomePageState extends State<HomePage> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Divider(height: 1, color: Colors.grey.shade100),
+            child: Divider(height: 1, color: const Color(0xFF0073F7).withAlpha(70)),
           ),
           Row(
             children: [
@@ -247,9 +239,11 @@ class _HomePageState extends State<HomePage> {
                       child: Checkbox(
                         value: isCharterOnly,
                         onChanged: (v) => setState(() => isCharterOnly = v!),
+                        side: BorderSide(color: Colors.grey.shade400, width: 1),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4),
                         ),
+                        activeColor: const Color(0xFF0073F7),
                       ),
                     ),
                     SizedBox(width: 8.w),
@@ -257,7 +251,7 @@ class _HomePageState extends State<HomePage> {
                       isCharterOnly ? 'Включено' : 'Выключено',
                       style: TextStyle(
                         fontSize: 15.sp,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
@@ -267,7 +261,7 @@ class _HomePageState extends State<HomePage> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Divider(height: 1, color: Colors.grey.shade100),
+            child: Divider(height: 1, color: const Color(0xFF0073F7).withAlpha(70)),
           ),
           Row(
             children: [
@@ -296,9 +290,9 @@ class _HomePageState extends State<HomePage> {
               child: ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0073F7),
+                  backgroundColor: const Color(0xFF026ed1),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.r),
+                    borderRadius: BorderRadius.circular(6.r),
                   ),
                   elevation: 0,
                 ),
@@ -337,7 +331,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        Icon(icon, color: const Color(0xFF0073F7), size: 22.sp),
+        Icon(icon, color: const Color(0xFF0073F7), size: 24.sp),
       ],
     );
   }
@@ -345,7 +339,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildGridItem(String label, String value) {
     return Expanded(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -356,7 +350,7 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 2.h),
             Text(
               value,
-              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -384,7 +378,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildVerticalDivider() =>
-      Container(width: 1, height: 40.h, color: Colors.grey.shade100);
+      Container(width: 1, height: 40.h, color: const Color(0xFF0073F7).withAlpha(70));
 
   Widget _buildFloatingWhatsApp() {
     return Positioned(

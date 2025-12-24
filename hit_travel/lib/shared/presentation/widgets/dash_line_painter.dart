@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 class DashLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    double dashHeight = 5, dashSpace = 3, startY = 0;
+    double dashHeight = 8, dashSpace = 2, startY = 0;
     final paint = Paint()
-      ..color = Colors.blue.shade200
-      ..strokeWidth = 1.5;
+      ..color = const Color(0xFF0073F7)
+      ..strokeWidth = 2;
     while (startY < size.height) {
       canvas.drawLine(Offset(0, startY), Offset(0, startY + dashHeight), paint);
       startY += dashHeight + dashSpace;
