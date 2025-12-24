@@ -45,35 +45,39 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       // Чтобы избежать проблем с клавиатурой, если появятся текстовые поля
       resizeToAvoidBottomInset: false,
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.white, Colors.lightBlue, Colors.white],
-            stops: const [0.0, 0.3, 1.0],
+      body: Stack(
+        children: [
+          // Фон
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/home_bg.jpeg',
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  _buildStories(),
-                  SizedBox(height: 4.h),
-                  _buildCategorySelector(),
-                  SizedBox(height: 12.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w),
-                    child: _buildSearchForm(),
-                  ),
-                ],
-              ),
-              _buildFloatingWhatsApp(),
-            ],
+
+          // Контент
+          SafeArea(
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    _buildStories(),
+                    SizedBox(height: 4.h),
+                    _buildCategorySelector(),
+                    SizedBox(height: 12.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.w),
+                      child: _buildSearchForm(),
+                    ),
+                  ],
+                ),
+                _buildFloatingWhatsApp(),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
+
     );
   }
 
