@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hit_travel/core/theme/theme.dart';
 import 'package:hit_travel/features/auth/presentation/pages/register_page.dart';
+import 'package:hit_travel/features/auth/presentation/widgets/auth_text_field.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -60,31 +61,10 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 8),
 
               // E-mail TextField
-              TextField(
+              AuthTextField(
                 controller: _emailController,
+                hintText: 'E-mail',
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: 'E-mail',
-                  hintStyle: AppTheme.textFieldText,
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey.shade400),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey.shade400),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFF0066CC)),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 13,
-                    vertical: 12,
-                  ),
-                ),
               ),
 
               const SizedBox(height: 12),
@@ -97,44 +77,10 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 8),
 
               // Password TextField
-              TextField(
+              AuthTextField(
                 controller: _passwordController,
-                obscureText: _obscurePassword,
-                decoration: InputDecoration(
-                  hintText: 'Пароль',
-                  hintStyle: AppTheme.textFieldText,
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey.shade400),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey.shade400),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFF026ed1)),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 13,
-                    vertical: 12,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                      color: const Color(0xFF0066CC),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                  ),
-                ),
+                hintText: 'Пароль',
+                isPassword: true,
               ),
 
               const SizedBox(height: 16),

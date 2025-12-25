@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hit_travel/core/theme/theme.dart';
 import 'package:hit_travel/features/auth/presentation/pages/login_page.dart';
+import 'package:hit_travel/features/auth/presentation/widgets/auth_text_field.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
@@ -18,9 +19,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
-
-  bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
 
   @override
   void dispose() {
@@ -66,32 +64,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
               // Name Label
               Text('Имя', style: AppTheme.labelText),
               const SizedBox(height: 8),
-
               // Name TextField
-              TextField(
+              AuthTextField(
                 controller: _nameController,
-                decoration: InputDecoration(
-                  hintText: 'Имя',
-                  hintStyle: AppTheme.textFieldText,
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.grey),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFF0066CC)),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 13,
-                    vertical: 12,
-                  ),
-                ),
+                hintText: 'Имя',
               ),
 
               const SizedBox(height: 12),
@@ -104,30 +80,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
               const SizedBox(height: 8),
 
               // Surname TextField
-              TextField(
+              AuthTextField(
                 controller: _surnameController,
-                decoration: InputDecoration(
-                  hintText: 'Фамилия',
-                  hintStyle: AppTheme.textFieldText,
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.grey),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFF0066CC)),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 13,
-                    vertical: 12,
-                  ),
-                ),
+                hintText: 'Фамилия',
               ),
 
               const SizedBox(height: 12),
@@ -193,31 +148,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
               const SizedBox(height: 8),
 
               // Email TextField
-              TextField(
+              AuthTextField(
                 controller: _emailController,
+                hintText: 'E-mail',
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: 'E-mail',
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.grey),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFF0066CC)),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 13,
-                    vertical: 12,
-                  ),
-                ),
               ),
 
               const SizedBox(height: 12),
@@ -227,44 +161,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
               const SizedBox(height: 8),
 
               // Password TextField
-              TextField(
+              AuthTextField(
                 controller: _passwordController,
-                obscureText: _obscurePassword,
-                decoration: InputDecoration(
-                  hintText: 'Пароль',
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.grey),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: AppTheme.blueColor),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 13,
-                    vertical: 12,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                      color: const Color(0xFF0066CC),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                  ),
-                ),
+                hintText: 'Пароль',
+                isPassword: true,
               ),
 
               const SizedBox(height: 12),
@@ -274,44 +174,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
               const SizedBox(height: 8),
 
               // Confirm Password TextField
-              TextField(
+              AuthTextField(
                 controller: _confirmPasswordController,
-                obscureText: _obscureConfirmPassword,
-                decoration: InputDecoration(
-                  hintText: 'Повторите пароль',
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.grey),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: AppTheme.blueColor),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 13,
-                    vertical: 12,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscureConfirmPassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                      color: const Color(0xFF0066CC),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscureConfirmPassword = !_obscureConfirmPassword;
-                      });
-                    },
-                  ),
-                ),
+                hintText: 'Повторите пароль',
+                isPassword: true,
               ),
 
               const SizedBox(height: 12),
