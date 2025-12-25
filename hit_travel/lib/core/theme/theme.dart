@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppTheme{
 
@@ -18,5 +19,19 @@ class AppTheme{
     ),
     iconTheme: IconThemeData(color: Colors.blue),
     primaryIconTheme: IconThemeData(color: Colors.blue),
+  );
+
+  static final blueColor = Color(0xFF026ed1);
+
+  static final labelText = TextStyle(fontSize: 15, color: Colors.grey);
+
+  static final textFieldText = TextStyle(color: Colors.black54);
+
+  static final elevatedButtonInAuth = ElevatedButton.styleFrom(
+    backgroundColor: AppTheme.blueColor,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(6.r),
+    ),
+    elevation: 0,
   );
 }

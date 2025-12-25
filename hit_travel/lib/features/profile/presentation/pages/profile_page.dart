@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hit_travel/features/auth/presentation/pages/login_page.dart';
+import 'package:hit_travel/features/auth/presentation/pages/register_page.dart';
 import 'package:hit_travel/shared/presentation/widgets/divider.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -77,21 +79,35 @@ class ProfilePage extends StatelessWidget {
                     ),
                     SizedBox(height: 20.h),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 26.w),
+                      padding: EdgeInsets.symmetric(horizontal: 30.w),
                       child: _buildAuthButton(
                         label: 'Войти',
                         onPressed: () {
                           // TODO: Навигация на страницу входа
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              fullscreenDialog: true, // Экран выедет снизу
+                              builder: (context) => const LoginPage(),
+                            ),
+                          );
                         },
                       ),
                     ),
                     SizedBox(height: 12.h),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 26.w),
+                      padding: EdgeInsets.symmetric(horizontal: 30.w),
                       child: _buildAuthButton(
                         label: 'Создать профиль',
                         onPressed: () {
                           // TODO: Навигация на регистрацию
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              fullscreenDialog: true,
+                              builder: (context) => const RegistrationPage(),
+                            ),
+                          );
                         },
                       ),
                     ),
