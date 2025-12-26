@@ -1,15 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hit_travel/core/di/locator.dart';
 import 'package:hit_travel/core/theme/theme.dart';
+import 'package:hit_travel/features/auth/presentation/pages/authorized_profile_page.dart';
 import 'package:hit_travel/features/auth/presentation/widgets/auth_text_field.dart';
-import 'dart:developer';
 
 import 'package:hit_travel/core/network/dio_client.dart';
-import 'package:hit_travel/features/profile/presentation/pages/profile_page.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 class VerifyPhonePage extends StatefulWidget {
-  final String phoneNumber; // Номер телефона, на который ушло СМС
+  final String phoneNumber;
 
   const VerifyPhonePage({super.key, required this.phoneNumber});
 
@@ -29,7 +30,6 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
     super.dispose();
   }
 
-  // 1. Метод подтверждения кода
   Future<void> _verifyCode() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
@@ -39,54 +39,62 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
         "code": int.tryParse(_codeController.text.trim()) ?? 0,
       };
 
-      log("Verifying code: $requestData");
-
       try {
         final response = await _apiService.post('/auth/verify-phone', requestData);
 
-        if (response.statusCode == 201 || response.statusCode == 200) {
+        final bool isSuccess = response.data['response'] == true;
+        final String message = response.data['message'] ?? "";
+
+        if (isSuccess) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Номер успешно подтвержден!'), backgroundColor: Colors.green),
             );
-            // После подтверждения обычно отправляем на главную или страницу логина
-            Navigator.push(
+
+            // // TODO handle successful sign-up
+            Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(
-                fullscreenDialog: true,
-                builder: (context) => const ProfilePage(),
-              ),
+              MaterialPageRoute(builder: (context) => const AuthorizedProfilePage()),
+                  (route) => false,
             );
           }
+        } else {
+          _showError(message.isNotEmpty ? message : "Введен неверный код");
         }
       } on DioException catch (e) {
-        _showError(e.response?.data?.toString() ?? "Ошибка верификации");
+        _showError(e.response?.data?['message']?.toString() ?? "Ошибка верификации");
       } finally {
         if (mounted) setState(() => _isLoading = false);
       }
     }
   }
 
-  // 2. Метод повторной отправки кода
   Future<void> _resendCode() async {
     setState(() => _isLoading = true);
 
-    // В Swagger указано, что phone должен быть integer для re-send?
-    // Если сервер ждет число, уберем '+' и приведем к int.
-    final cleanPhone = widget.phoneNumber.replaceAll('+', '');
     final requestData = {
-      "phone": int.tryParse(cleanPhone) ?? 0,
+
+      "phone": widget.phoneNumber,
     };
+
+    serviceLocator<Talker>().info("Resending code to: $requestData");
 
     try {
       final response = await _apiService.post('/auth/re-send', requestData);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Код отправлен повторно'), backgroundColor: Colors.blue),
-        );
+
+      final bool isSuccess = response.data['response'] == true;
+
+      if (isSuccess || response.statusCode == 201 || response.statusCode == 200) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Код отправлен повторно'), backgroundColor: Colors.blue),
+          );
+        }
+      } else {
+        _showError(response.data['message'] ?? "Ошибка отправки");
       }
     } on DioException catch (e) {
-      _showError(e.response?.data?.toString() ?? "Не удалось отправить код");
+      _showError(e.response?.data?['message']?.toString() ?? "Не удалось отправить код");
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -111,7 +119,7 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text('Подтверждение', style: TextStyle(color: Colors.white, fontSize: 17.sp)),
+        title: Text('Вход в профиль', style: TextStyle(color: Colors.white, fontSize: 17.sp)),
         centerTitle: true,
       ),
       body: Form(
@@ -123,10 +131,11 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 8.h),
-                Text(
-                  'Введите регистрационный код, высланный на номер ${widget.phoneNumber}',
-                  style: TextStyle(fontSize: 15.sp, color: Colors.black, fontWeight: FontWeight.w600),
-                ),
+                Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 16.w), child: Text(
+                  'Введите регистрационный код, высланный на указанный номер телефона',
+                  style: TextStyle(fontSize: 14.sp, color: Colors.black, fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.center,
+                ),),
                 const SizedBox(height: 18),
 
                 AuthTextField(

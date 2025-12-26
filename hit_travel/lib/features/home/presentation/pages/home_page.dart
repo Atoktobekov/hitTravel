@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:hit_travel/core/constants/app_links.dart';
-import 'package:hit_travel/shared/presentation/widgets/divider.dart';
+import 'package:hit_travel/shared/presentation/widgets/blue_divider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

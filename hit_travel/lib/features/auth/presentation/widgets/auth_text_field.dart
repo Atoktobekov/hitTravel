@@ -6,7 +6,6 @@ class AuthTextField extends StatefulWidget {
   final String hintText;
   final bool isPassword;
   final TextInputType keyboardType;
-  // 1. Добавляем поле для валидатора
   final String? Function(String?)? validator;
 
   const AuthTextField({
@@ -15,7 +14,7 @@ class AuthTextField extends StatefulWidget {
     required this.hintText,
     this.isPassword = false,
     this.keyboardType = TextInputType.text,
-    this.validator, // 2. Добавляем в конструктор
+    this.validator,
   });
 
   @override
@@ -27,14 +26,13 @@ class _AuthTextFieldState extends State<AuthTextField> {
 
   @override
   Widget build(BuildContext context) {
-    // 3. Меняем TextField на TextFormField
     return TextFormField(
       controller: widget.controller,
       obscureText: widget.isPassword ? _obscureText : false,
       keyboardType: widget.keyboardType,
-      validator: widget.validator, // 4. Передаем валидатор в TextFormField
+      validator: widget.validator,
 
-      // Настройка стиля текста ошибки
+      // error text style
       style: const TextStyle(fontSize: 16, color: Colors.black87),
 
       decoration: InputDecoration(
@@ -43,7 +41,6 @@ class _AuthTextFieldState extends State<AuthTextField> {
         filled: true,
         fillColor: Colors.white,
 
-        // Настройка границ (Border)
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: Colors.grey.shade400),
@@ -57,7 +54,6 @@ class _AuthTextFieldState extends State<AuthTextField> {
           borderSide: BorderSide(color: Color(0xFF026ed1)),
         ),
 
-        // 5. Настройка границы при ошибке
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: Colors.red, width: 1),

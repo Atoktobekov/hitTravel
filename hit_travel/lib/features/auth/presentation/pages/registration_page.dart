@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hit_travel/core/di/locator.dart';
 import 'package:hit_travel/core/network/dio_client.dart';
 import 'package:hit_travel/core/theme/theme.dart';
 import 'package:hit_travel/features/auth/presentation/pages/login_page.dart';
@@ -9,6 +10,7 @@ import 'package:hit_travel/features/auth/presentation/widgets/auth_text_field.da
 import 'dart:developer';
 
 import 'package:hit_travel/features/auth/data/models/register_request.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
@@ -19,7 +21,7 @@ class RegistrationPage extends StatefulWidget {
 
 class _RegistrationPageState extends State<RegistrationPage> {
   final ApiService _apiService = ApiService();
-  final _formKey = GlobalKey<FormState>(); // Ключ для валидации
+  final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
   final TextEditingController _nameController = TextEditingController();
@@ -64,12 +66,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('Осталось немного, подтвердите номер телефона'),
+                content: Text('Осталось немного, подтвердите пожалуйста номер телефона'),
                 backgroundColor: Colors.green,
               ),
             );
             Navigator.of(context).pop();
             final phone = "+996${_phoneController.text.trim()}";
+            serviceLocator<Talker>().info("Phone: $phone");
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -79,12 +82,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
           }
         }
       } on DioException catch (e) {
-        // Обработка ошибок от сервера (например, 400 Bad Request)
+        serviceLocator<Talker>().handle(e, null, "[RegistrationPageError] _register() method");
         String errorMessage = "Произошла ошибка";
 
         if (e.response?.data != null && e.response?.data is Map) {
-          // Сервер часто присылает описание ошибки в теле ответа
-          // Например: {"email": ["Этот адрес уже занят"]}
           errorMessage = e.response?.data.toString() ?? errorMessage;
         }
 
@@ -130,7 +131,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
         centerTitle: true,
       ),
       body: Form(
-        // Оборачиваем в Form для валидации
         key: _formKey,
         child: SingleChildScrollView(
           child: Padding(
@@ -155,7 +155,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 ),
                 const SizedBox(height: 12),
 
-                //phone number label
                 _buildLabel('Номер телефона'),
                 _buildPhoneField(),
                 const SizedBox(height: 12),
@@ -194,7 +193,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 _buildTermsText(),
                 const SizedBox(height: 20),
 
-                // Кнопка регистрации
+                // registration button
                 SizedBox(
                   width: double.infinity,
                   height: 52,
@@ -224,7 +223,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
   }
 
-  // Вспомогательные виджеты для чистоты кода
+  // helper widgets
   Widget _buildLabel(String text) => Padding(
     padding: const EdgeInsets.only(bottom: 8),
     child: Text(text, style: AppTheme.labelText),
@@ -253,7 +252,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
           ),
           Expanded(
             child: TextFormField(
-              // Используем TextFormField для валидации
               controller: _phoneController,
               keyboardType: TextInputType.phone,
               validator: (v) => v!.isEmpty ? 'Введите номер' : null,
