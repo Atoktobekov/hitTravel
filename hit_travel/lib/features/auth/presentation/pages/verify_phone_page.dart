@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hit_travel/core/di/locator.dart';
+import 'package:hit_travel/core/network/auth_cache_manager.dart';
 import 'package:hit_travel/core/theme/theme.dart';
-import 'package:hit_travel/features/auth/presentation/pages/authorized_profile_page.dart';
 import 'package:hit_travel/features/auth/presentation/widgets/auth_text_field.dart';
 
 import 'package:hit_travel/core/network/dio_client.dart';
@@ -47,16 +47,16 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
 
         if (isSuccess) {
           if (mounted) {
+            // Сохраняем токен
+            final String token = response.data['token'];
+            await serviceLocator<AuthCacheManager>().saveToken(token);
+
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Номер успешно подтвержден!'), backgroundColor: Colors.green),
             );
 
-            // // TODO handle successful sign-up
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const AuthorizedProfilePage()),
-                  (route) => false,
-            );
+            // Возвращаемся в самый корень (на RootPage)
+            Navigator.of(context).popUntil((route) => route.isFirst);
           }
         } else {
           _showError(message.isNotEmpty ? message : "Введен неверный код");

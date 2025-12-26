@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hit_travel/core/di/locator.dart';
+import 'package:hit_travel/core/network/auth_cache_manager.dart';
 import 'package:hit_travel/core/network/dio_client.dart';
 import 'package:hit_travel/core/theme/theme.dart';
 import 'package:hit_travel/features/auth/presentation/pages/registration_page.dart';
@@ -44,18 +46,19 @@ class _LoginPageState extends State<LoginPage> {
         final response = await _apiService.post('/auth/login', requestData);
 
         if (response.statusCode == 200 || response.statusCode == 201) {
-          // TODO: Сохранить токен (мы сделаем это следующим шагом через SharedPreferences)
-          log("Login Success: ${response.data}");
+          // Сохраняем токен через наш менеджер
+          final String token = response.data['token'];
+          await serviceLocator<AuthCacheManager>().saveToken(token);
 
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Вход выполнен!'), backgroundColor: Colors.green),
             );
-            // Возвращаемся в профиль или на главную
+            // Просто закрываем страницу логина. RootPage сам обновится.
             Navigator.of(context).pop();
           }
         }
-      } on DioException catch (e) {
+      }on DioException catch (e) {
         String error = "Ошибка входа";
         if (e.response?.statusCode == 400) {
           error = "Неверный email или пароль";

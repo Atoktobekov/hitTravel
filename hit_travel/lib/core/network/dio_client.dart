@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:hit_travel/core/di/locator.dart';
+import 'package:hit_travel/core/network/auth_cache_manager.dart';
 
 class ApiService {
   final Dio _dio = serviceLocator<Dio>();
@@ -18,5 +19,28 @@ class ApiService {
 
   Future<Response> resendCode(Map<String, dynamic> data) async {
     return await _dio.post('/auth/re-send', data: data);
+  }
+
+  // Метод для получения личных данных (GET /profile/personal)
+  Future<Response> getPersonalData() async {
+    // Используем serviceLocator (или sl), а не setupLocator
+    final token = serviceLocator<AuthCacheManager>().getToken();
+
+    return await _dio.get(
+      '/profile/personal',
+      options: Options(headers: {
+        // В Django (судя по Swagger) обычно используется префикс Token
+        'Authorization': 'Token $token',
+      }),
+    );
+  }
+
+  // Метод для получения моих туров (GET /profile/my-tour)
+  Future<Response> getMyTours() async {
+    final token = serviceLocator<AuthCacheManager>().getToken();
+    return await _dio.get(
+      '/profile/my-tour',
+      options: Options(headers: {'Authorization': 'Token $token'}),
+    );
   }
 }
