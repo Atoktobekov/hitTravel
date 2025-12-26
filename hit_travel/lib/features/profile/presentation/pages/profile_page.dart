@@ -83,11 +83,10 @@ class ProfilePage extends StatelessWidget {
                       child: _buildAuthButton(
                         label: 'Войти',
                         onPressed: () {
-                          // TODO: Навигация на страницу входа
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              fullscreenDialog: true, // Экран выедет снизу
+                              fullscreenDialog: true,
                               builder: (context) => const LoginPage(),
                             ),
                           );
@@ -100,7 +99,6 @@ class ProfilePage extends StatelessWidget {
                       child: _buildAuthButton(
                         label: 'Создать профиль',
                         onPressed: () {
-                          // TODO: Навигация на регистрацию
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -115,11 +113,24 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
             ),
-            _buildMenuTile(
-              icon: Icons.contact_support_outlined,
-              title: 'Контакты',
+            ListTile(
+              title: Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: Text(
+                  "Контакты",
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              trailing: Icon(
+                Icons.chevron_right,
+                size: 24.sp,
+                color: Colors.black,
+              ),
               onTap: () {
-                // TODO handle contact support
+                //TODO handle contact support
               },
             ),
             blueDivider,
@@ -151,33 +162,27 @@ class ProfilePage extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: Color(
-              0xff157ed4)),
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w500,
+            color: Color(0xff157ed4),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildMenuTile({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: ListTile(
-        leading: Icon(icon, color: Colors.blue, size: 22.sp),
-        title: Text(
+  Widget _buildMenuTile({required String title, required VoidCallback onTap}) {
+    return ListTile(
+      title: Padding(
+        padding: EdgeInsets.only(left: 10),
+        child: Text(
           title,
-          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
+          style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600),
         ),
-        trailing: Icon(Icons.chevron_right, size: 22.sp, color: Colors.black),
-        onTap: onTap,
       ),
+      trailing: Icon(Icons.chevron_right, size: 22.sp, color: Colors.black),
+      onTap: onTap,
     );
   }
 }
