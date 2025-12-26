@@ -6,6 +6,8 @@ class AuthTextField extends StatefulWidget {
   final String hintText;
   final bool isPassword;
   final TextInputType keyboardType;
+  // 1. Добавляем поле для валидатора
+  final String? Function(String?)? validator;
 
   const AuthTextField({
     super.key,
@@ -13,6 +15,7 @@ class AuthTextField extends StatefulWidget {
     required this.hintText,
     this.isPassword = false,
     this.keyboardType = TextInputType.text,
+    this.validator, // 2. Добавляем в конструктор
   });
 
   @override
@@ -24,15 +27,23 @@ class _AuthTextFieldState extends State<AuthTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    // 3. Меняем TextField на TextFormField
+    return TextFormField(
       controller: widget.controller,
       obscureText: widget.isPassword ? _obscureText : false,
       keyboardType: widget.keyboardType,
+      validator: widget.validator, // 4. Передаем валидатор в TextFormField
+
+      // Настройка стиля текста ошибки
+      style: const TextStyle(fontSize: 16, color: Colors.black87),
+
       decoration: InputDecoration(
         hintText: widget.hintText,
         hintStyle: AppTheme.textFieldText,
         filled: true,
         fillColor: Colors.white,
+
+        // Настройка границ (Border)
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: Colors.grey.shade400),
@@ -45,11 +56,22 @@ class _AuthTextFieldState extends State<AuthTextField> {
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: Color(0xFF026ed1)),
         ),
+
+        // 5. Настройка границы при ошибке
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.red, width: 1),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.red, width: 1.5),
+        ),
+
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 13,
           vertical: 12,
         ),
-        // Показываем иконку только если это поле для пароля
+
         suffixIcon: widget.isPassword
             ? IconButton(
           icon: Icon(

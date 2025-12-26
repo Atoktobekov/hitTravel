@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hit_travel/features/auth/presentation/pages/login_page.dart';
-import 'package:hit_travel/features/auth/presentation/pages/register_page.dart';
+import 'package:hit_travel/features/auth/presentation/pages/registration_page.dart';
 import 'package:hit_travel/shared/presentation/widgets/divider.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -118,7 +118,9 @@ class ProfilePage extends StatelessWidget {
             _buildMenuTile(
               icon: Icons.contact_support_outlined,
               title: 'Контакты',
-              onTap: () {},
+              onTap: () {
+                // TODO handle contact support
+              },
             ),
             blueDivider,
             // space for bottom
