@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:hit_travel/core/constants/app_links.dart';
 import 'package:hit_travel/shared/presentation/widgets/divider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
@@ -418,11 +419,6 @@ class _HomePageState extends State<HomePage> {
   );
 
   Widget _buildFloatingWhatsAppContent() {
-    final Uri whatsappUri = Uri.parse('https://wa.me/996700636676').replace(
-      queryParameters: {
-        'text': 'Здравствуйте!\n\nПишу из приложения Hit Travel\n\n',
-      },
-    );
 
     return Container(
       decoration: BoxDecoration(
@@ -436,14 +432,15 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+
       // use material to make it work
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: () async {
-            if (await canLaunchUrl(whatsappUri)) {
+            if (await canLaunchUrl(AppLinks.whatsappUri)) {
               await launchUrl(
-                whatsappUri,
+                AppLinks.whatsappUri,
                 mode: LaunchMode.externalApplication,
               );
             } else {

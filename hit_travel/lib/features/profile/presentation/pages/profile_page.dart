@@ -1,8 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hit_travel/core/constants/app_links.dart';
+import 'package:hit_travel/core/theme/theme.dart';
 import 'package:hit_travel/features/auth/presentation/pages/login_page.dart';
 import 'package:hit_travel/features/auth/presentation/pages/registration_page.dart';
 import 'package:hit_travel/shared/presentation/widgets/divider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -17,12 +22,21 @@ class ProfilePage extends StatelessWidget {
           'Профиль',
           style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w100),
         ),
-        backgroundColor: Color(0xFF026ed1),
+        backgroundColor: AppTheme.blueColor,
         foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: Icon(Icons.chat_sharp, size: 24.sp),
-            onPressed: () {},
+            onPressed: () async {
+              if (await canLaunchUrl(AppLinks.whatsappUri)) {
+                await launchUrl(
+                  AppLinks.whatsappUri,
+                  mode: LaunchMode.externalApplication,
+                );
+              } else {
+                log('WhatsApp not available');
+              }
+            },
           ),
         ],
       ),
@@ -31,7 +45,7 @@ class ProfilePage extends StatelessWidget {
           children: [
             Container(
               width: double.infinity,
-              color: Color(0xFF026ed1),
+              color: AppTheme.blueColor,
               padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 20.h),
               child: Container(
                 decoration: BoxDecoration(
@@ -169,20 +183,6 @@ class ProfilePage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildMenuTile({required String title, required VoidCallback onTap}) {
-    return ListTile(
-      title: Padding(
-        padding: EdgeInsets.only(left: 10),
-        child: Text(
-          title,
-          style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600),
-        ),
-      ),
-      trailing: Icon(Icons.chevron_right, size: 22.sp, color: Colors.black),
-      onTap: onTap,
     );
   }
 }
