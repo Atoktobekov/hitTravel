@@ -1,5 +1,9 @@
+import 'dart:developer';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hit_travel/core/network/dio_client.dart';
 import 'package:hit_travel/core/theme/theme.dart';
 import 'package:hit_travel/features/auth/presentation/pages/registration_page.dart';
 import 'package:hit_travel/features/auth/presentation/widgets/auth_text_field.dart';
@@ -12,14 +16,59 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final ApiService _apiService = ApiService();
+  bool _isLoading = false;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _login() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() => _isLoading = true);
+
+      final requestData = {
+        "email": _emailController.text.trim(),
+        "password": _passwordController.text,
+      };
+
+      log("Attempting login for: ${_emailController.text}");
+
+      try {
+        final response = await _apiService.post('/auth/login', requestData);
+
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          // TODO: Сохранить токен (мы сделаем это следующим шагом через SharedPreferences)
+          log("Login Success: ${response.data}");
+
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Вход выполнен!'), backgroundColor: Colors.green),
+            );
+            // Возвращаемся в профиль или на главную
+            Navigator.of(context).pop();
+          }
+        }
+      } on DioException catch (e) {
+        String error = "Ошибка входа";
+        if (e.response?.statusCode == 400) {
+          error = "Неверный email или пароль";
+        }
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error), backgroundColor: Colors.red),
+          );
+        }
+      } finally {
+        if (mounted) setState(() => _isLoading = false);
+      }
+    }
   }
 
   @override
@@ -46,7 +95,9 @@ class _LoginPageState extends State<LoginPage> {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
+      body: Form(
+      key: _formKey,
+      child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -64,6 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                 controller: _emailController,
                 hintText: 'E-mail',
                 keyboardType: TextInputType.emailAddress,
+                validator: (value) => (value == null || !value.contains('@')) ? 'Введите корректный email' : null,
               ),
 
               const SizedBox(height: 12),
@@ -80,6 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                 controller: _passwordController,
                 hintText: 'Пароль',
                 isPassword: true,
+                validator: (value) => (value == null || value.isEmpty) ? 'Введите пароль' : null,
               ),
 
               const SizedBox(height: 16),
@@ -87,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
               // Forgot Password Link
               GestureDetector(
                 onTap: () {
-                  // Handle forgot password
+                  // TODO Handle forgot password
                 },
                 child: const Text(
                   'Забыли пароль?',
@@ -106,11 +159,11 @@ class _LoginPageState extends State<LoginPage> {
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // TODO Handle login
-                  },
+                  onPressed: _isLoading ? null : _login,
                   style: AppTheme.elevatedButtonInAuth,
-                  child: const Text(
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
                     'Войти',
                     style: TextStyle(
                       color: Colors.white,
@@ -133,7 +186,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      // TODO Handle sign up
                       Navigator.of(context).pop();
                       Navigator.push(
                         context,
@@ -158,6 +210,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
+    ),
     );
   }
 }
