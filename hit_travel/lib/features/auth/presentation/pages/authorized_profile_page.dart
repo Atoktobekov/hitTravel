@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hit_travel/core/di/locator.dart';
 import 'package:hit_travel/core/network/auth_cache_manager.dart';
 import 'package:hit_travel/core/network/dio_client.dart';
 import 'package:hit_travel/core/theme/theme.dart';
+import 'package:hit_travel/features/profile/presentation/widgets/profile_list_tile.dart';
+import 'package:hit_travel/shared/presentation/widgets/blue_divider.dart';
 
 class AuthorizedProfilePage extends StatefulWidget {
   const AuthorizedProfilePage({super.key});
@@ -27,7 +30,6 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
       final response = await _apiService.getPersonalData();
       if (mounted) {
         setState(() {
-          // Согласно логам, данные лежат в поле 'data'
           userData = response.data['data'];
           isLoading = false;
         });
@@ -48,7 +50,6 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    // Маппинг данных из ответа API
     final String firstName = userData?['first_name'] ?? 'Имя';
     final String lastName = userData?['last_name'] ?? '';
     final String email = userData?['email'] ?? 'E-mail не указан';
@@ -58,97 +59,23 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: RefreshIndicator(
-        onRefresh: _loadProfile, // Позволяет обновить данные свайпом вниз
+        onRefresh: _loadProfile,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             children: [
-              // Blue Header Section
               Container(
                 width: double.infinity,
-                decoration: BoxDecoration(color: AppTheme.blueColor),
-                child: SafeArea(
-                  bottom: false,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            // Avatar с загрузкой из сети
-                            Container(
-                              width: 70,
-                              height: 70,
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                              ),
-                              clipBehavior: Clip.antiAlias,
-                              child: photoUrl != null && photoUrl.isNotEmpty
-                                  ? Image.network(
-                                      photoUrl,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) => Icon(
-                                            Icons.person,
-                                            size: 40,
-                                            color: AppTheme.blueColor,
-                                          ),
-                                    )
-                                  : Icon(
-                                      Icons.person,
-                                      size: 40,
-                                      color: AppTheme.blueColor,
-                                    ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '$firstName $lastName'.trim(),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    email,
-                                    style: TextStyle(
-                                      color: Colors.white.withOpacity(0.9),
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            // Кнопка редактирования (пока просто иконка)
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Icon(
-                                Icons.edit,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        // Bonuses Card
-                        _buildBonusesCard(bonuses),
-                      ],
-                    ),
-                  ),
+                color: AppTheme.blueColor,
+                padding: const EdgeInsets.fromLTRB(16, 48, 16, 18),
+                child: Column(
+                  children: [
+                    _buildHeader(firstName, lastName, email, photoUrl),
+                    const SizedBox(height: 20),
+                    _buildBonusesCard(bonuses),
+                  ],
                 ),
               ),
-              // Menu Items
               _buildMenu(),
             ],
           ),
@@ -157,66 +84,167 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
     );
   }
 
+  Widget _buildHeader(
+    String firstName,
+    String lastName,
+    String email,
+    String? photoUrl,
+  ) {
+    return Row(
+      children: [
+        Container(
+          width: 64,
+          height: 64,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: photoUrl != null && photoUrl.isNotEmpty
+              ? Image.network(photoUrl, fit: BoxFit.cover)
+              : Icon(Icons.person, size: 36, color: AppTheme.blueColor),
+        ),
+        const SizedBox(width: 14),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$firstName $lastName'.trim(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                email,
+                style: TextStyle(
+                  color: Colors.white.withAlpha(225),
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: Colors.white.withAlpha(50),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: const Icon(Icons.edit, size: 18, color: Colors.white),
+        ),
+      ],
+    );
+  }
+
   Widget _buildBonusesCard(String bonuses) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.fromLTRB(20, 12, 16, 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(15),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Доступные бонусы',
-                    style: TextStyle(fontSize: 16, color: Colors.black87),
-                  ),
-                  const SizedBox(height: 8),
-                  RichText(
-                    text: TextSpan(
+              // ===== LEFT CONTENT =====
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Доступные бонусы',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+
+                    // bonuses text
+                    Row(
                       children: [
-                        TextSpan(
-                          text: '$bonuses ',
+                        Text(
+                          "$bonuses ",
                           style: const TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w100,
+                            color: Colors.black87,
                           ),
                         ),
-                        const TextSpan(
-                          text: 'С',
+                        const Text(
+                          'С',
                           style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w200,
                             color: Colors.black,
                             decoration: TextDecoration.underline,
+                            decorationThickness: 1.5,
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
+
+                    const SizedBox(height: 4),
+
+                    GestureDetector(
+                      onTap: () {
+                        // TODO: bonuses story
+                      },
+                      child: const Text(
+                        'История бонусов',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF0A84FF),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+                  ],
+                ),
               ),
-              Image.asset(
-                'assets/gift.png',
-                width: 80,
-                height: 80,
-                errorBuilder: (_, __, ___) =>
-                    const Text('🎁', style: TextStyle(fontSize: 50)),
+
+              const SizedBox(width: 12),
+
+              // ===== GIFT ICON =====
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Image.asset(
+                  'assets/gift.png',
+                  width: 64,
+                  height: 64,
+                  errorBuilder: (_, __, ___) =>
+                      const Text('🎁', style: TextStyle(fontSize: 44)),
+                ),
               ),
             ],
           ),
+          blueDivider,
+
           const SizedBox(height: 12),
-          const Divider(),
-          const Text(
+
+          Text(
             'Получайте кешбек за покупку туров и используйте бонусы для следующих поездок!',
-            style: TextStyle(fontSize: 13, color: Colors.black54, height: 1.4),
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey.shade500,
+              height: 1.1,
+            ),
           ),
         ],
       ),
@@ -226,50 +254,82 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
   Widget _buildMenu() {
     return Column(
       children: [
-        _buildMenuItem(
-          icon: Icons.shopping_bag_outlined,
-          title: 'Мои заказы',
-          onTap: () {},
+
+        ProfileListTile(
+          title: "Мои заказы",
+          onTap: () {
+            //TODO handle my bookings
+          },
+          isChevronNeeded: false,
         ),
-        _buildDivider(),
-        _buildMenuItem(
-          icon: Icons.notifications_outlined,
-          title: 'Уведомления',
-          onTap: () {},
+
+        blueDivider,
+        ProfileListTile(
+          title: "Уведомления",
+          onTap: () {
+            //TODO handle notifications
+          },
+          isChevronNeeded: false,
         ),
-        _buildDivider(),
-        _buildMenuItem(
-          icon: Icons.contacts_outlined,
-          title: 'Контакты',
-          onTap: () {},
+
+        blueDivider,
+        ProfileListTile(
+          title: "Контакты",
+          onTap: () {
+            //TODO handle contact support
+          },
+          isChevronNeeded: false,
         ),
-        _buildDivider(),
-        _buildMenuItem(
-          icon: Icons.lock_outline,
-          title: 'Изменить пароль',
-          onTap: () {},
+
+        blueDivider,
+        ProfileListTile(
+          title: "Изменить пароль",
+          onTap: () {
+            //TODO handle change password
+          },
+          isChevronNeeded: false,
         ),
-        _buildDivider(),
-        _buildMenuItem(
-          icon: Icons.help_outline,
-          title: 'Часто задаваемые вопросы',
-          onTap: () {},
+
+        blueDivider,
+        ProfileListTile(
+          title: "Часто задаваемые вопросы",
+          onTap: () {
+            //TODO handle frequently asked questions
+          },
+          isChevronNeeded: false,
         ),
-        _buildDivider(),
-        _buildMenuItem(
-          icon: Icons.language,
-          title: 'Язык',
-          trailing: const Text(
-            'Русский',
-            style: TextStyle(fontSize: 16, color: Colors.black54),
+
+        blueDivider,
+        ListTile(
+          minTileHeight: 42.h,
+          title: Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: Text(
+              "Язык",
+              style: TextStyle(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+            ),
           ),
-          onTap: () {},
+          trailing: Text(
+            "Русский",
+            style: TextStyle(
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey.shade500,
+            ),
+          ),
+
+          onTap: () {
+            //TODO handle language change
+          },
         ),
-        _buildDivider(),
-        _buildMenuItem(
-          icon: Icons.logout,
-          title: 'Выйти из аккаунта',
-          titleColor: Colors.red,
+
+        blueDivider,
+        ProfileListTile(
+          title: "Выйти / Удалить аккаунт",
           onTap: () async {
             await serviceLocator<AuthCacheManager>().logout();
             ScaffoldMessenger.of(context).showSnackBar(
@@ -279,43 +339,11 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
               ),
             );
           },
+          isChevronNeeded: false,
         ),
-        const SizedBox(height: 40),
+        blueDivider,
+        const SizedBox(height: 32),
       ],
     );
   }
-
-  Widget _buildMenuItem({
-    required IconData icon,
-    required String title,
-    Color? titleColor,
-    Widget? trailing,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-        child: Row(
-          children: [
-            Icon(icon, size: 24, color: titleColor ?? Colors.black87),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: titleColor ?? Colors.black87,
-                ),
-              ),
-            ),
-            if (trailing != null) trailing,
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDivider() =>
-      const Divider(height: 1, thickness: 1, indent: 24, endIndent: 24);
 }

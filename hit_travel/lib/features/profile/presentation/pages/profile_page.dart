@@ -6,6 +6,7 @@ import 'package:hit_travel/core/constants/app_links.dart';
 import 'package:hit_travel/core/theme/theme.dart';
 import 'package:hit_travel/features/auth/presentation/pages/login_page.dart';
 import 'package:hit_travel/features/auth/presentation/pages/registration_page.dart';
+import 'package:hit_travel/features/profile/presentation/widgets/profile_list_tile.dart';
 import 'package:hit_travel/shared/presentation/widgets/blue_divider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -46,7 +47,7 @@ class ProfilePage extends StatelessWidget {
             Container(
               width: double.infinity,
               color: AppTheme.blueColor,
-              padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 20.h),
+              padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 24.h),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -127,25 +128,12 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
             ),
-            ListTile(
-              title: Padding(
-                padding: EdgeInsets.only(left: 10),
-                child: Text(
-                  "Контакты",
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              trailing: Icon(
-                Icons.chevron_right,
-                size: 24.sp,
-                color: Colors.black,
-              ),
+            ProfileListTile(
+              title: "Контакты",
               onTap: () {
-                //TODO handle contact support
+                // TODO: handle contact support
               },
+              isChevronNeeded: true,
             ),
             blueDivider,
             // space for bottom
