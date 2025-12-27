@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
         final response = await _apiService.post('/auth/login', requestData);
 
         if (response.statusCode == 200 || response.statusCode == 201) {
-          // Сохраняем токен через наш менеджер
+          // saving token
           final String token = response.data['token'];
           await serviceLocator<AuthCacheManager>().saveToken(token);
 
@@ -54,7 +54,6 @@ class _LoginPageState extends State<LoginPage> {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Вход выполнен!'), backgroundColor: Colors.green),
             );
-            // Просто закрываем страницу логина. RootPage сам обновится.
             Navigator.of(context).pop();
           }
         }

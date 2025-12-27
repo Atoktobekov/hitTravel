@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hit_travel/core/di/locator.dart';
 import 'package:hit_travel/core/network/auth_cache_manager.dart';
-import 'package:hit_travel/features/auth/presentation/pages/authorized_profile_page.dart';
+import 'package:hit_travel/features/profile/presentation/pages/authorized_profile_page.dart';
 import 'package:hit_travel/features/home/presentation/pages/home_page.dart';
 import 'package:hit_travel/features/favorites/presentation/pages/favorites_page.dart';
 import 'package:hit_travel/features/my_bookings/presentation/pages/my_bookings_page.dart';
