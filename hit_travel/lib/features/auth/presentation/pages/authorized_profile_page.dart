@@ -160,7 +160,6 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ===== LEFT CONTENT =====
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -221,7 +220,6 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
 
               const SizedBox(width: 12),
 
-              // ===== GIFT ICON =====
               Padding(
                 padding: const EdgeInsets.only(top: 4),
                 child: Image.asset(
@@ -254,7 +252,6 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
   Widget _buildMenu() {
     return Column(
       children: [
-
         ProfileListTile(
           title: "Мои заказы",
           onTap: () {
@@ -330,20 +327,101 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
         blueDivider,
         ProfileListTile(
           title: "Выйти / Удалить аккаунт",
-          onTap: () async {
-            await serviceLocator<AuthCacheManager>().logout();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("Выход успешно выполнен!"),
-                backgroundColor: Colors.green,
-              ),
-            );
-          },
+          onTap: () => _showLogoutDeleteDialog(context),
           isChevronNeeded: false,
         ),
         blueDivider,
         const SizedBox(height: 32),
       ],
+    );
+  }
+
+  void _showLogoutDeleteDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // dialog header
+                const Text(
+                  "Управление аккаунтом",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 1),
+
+                // logout option
+                ListTile(
+                  leading: const Icon(Icons.logout, color: Colors.blue),
+                  title: const Text("Выйти из аккаунта"),
+                  onTap: () async {
+                    Navigator.pop(context); // Закрываем диалог
+                    await serviceLocator<AuthCacheManager>().logout();
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Выход успешно выполнен!"),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    }
+                  },
+                ),
+
+                blueDivider,
+
+                //delete account option
+                ListTile(
+                  leading: const Icon(Icons.delete_forever, color: Colors.red),
+                  title: const Text(
+                    "Удалить аккаунт",
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _showDeleteConfirmation(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // show delete confirmation dialog
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Удаление аккаунта"),
+        content: const Text(
+          "Вы уверены, что хотите удалить аккаунт? Это действие необратимо.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Отмена"),
+          ),
+          TextButton(
+            onPressed: () {
+              //TODO handle account deleting
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Запрос на удаление отправлен.")),
+              );
+            },
+            child: const Text("Удалить", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
     );
   }
 }
