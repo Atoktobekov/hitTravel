@@ -6,6 +6,7 @@ import 'package:hit_travel/core/constants/app_links.dart';
 import 'package:hit_travel/core/theme/theme.dart';
 import 'package:hit_travel/features/auth/presentation/pages/login_page.dart';
 import 'package:hit_travel/features/auth/presentation/pages/registration_page.dart';
+import 'package:hit_travel/features/profile/presentation/pages/contacts_page.dart';
 import 'package:hit_travel/features/profile/presentation/widgets/profile_list_tile.dart';
 import 'package:hit_travel/shared/presentation/widgets/blue_divider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -131,7 +132,13 @@ class ProfilePage extends StatelessWidget {
             ProfileListTile(
               title: "Контакты",
               onTap: () {
-                // TODO: handle contact support
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    fullscreenDialog: true,
+                    builder: (context) => const ContactsPage(),
+                  ),
+                );
               },
               isChevronNeeded: true,
             ),

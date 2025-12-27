@@ -274,7 +274,6 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
         ProfileListTile(
           title: "Контакты",
           onTap: () {
-            //TODO handle contact support
             Navigator.push(
               context,
               MaterialPageRoute(
