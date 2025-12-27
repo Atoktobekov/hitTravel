@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'package:hit_travel/core/constants/app_links.dart';
+import 'package:hit_travel/core/di/locator.dart';
 import 'package:hit_travel/shared/presentation/widgets/blue_divider.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -444,7 +446,7 @@ class _HomePageState extends State<HomePage> {
                 mode: LaunchMode.externalApplication,
               );
             } else {
-              log('WhatsApp not available');
+              serviceLocator<Talker>().error("Could not open WhatsApp.");
             }
           },
           borderRadius: BorderRadius.circular(30.r),

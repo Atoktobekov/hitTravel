@@ -4,6 +4,7 @@ import 'package:hit_travel/core/di/locator.dart';
 import 'package:hit_travel/core/network/auth_cache_manager.dart';
 import 'package:hit_travel/core/network/dio_client.dart';
 import 'package:hit_travel/core/theme/theme.dart';
+import 'package:hit_travel/features/profile/presentation/pages/contacts_page.dart';
 import 'package:hit_travel/features/profile/presentation/widgets/profile_list_tile.dart';
 import 'package:hit_travel/shared/presentation/widgets/blue_divider.dart';
 
@@ -274,6 +275,13 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
           title: "Контакты",
           onTap: () {
             //TODO handle contact support
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                fullscreenDialog: true,
+                builder: (context) => const ContactsPage(),
+              ),
+            );
           },
           isChevronNeeded: false,
         ),

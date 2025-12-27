@@ -6,4 +6,6 @@ static final Uri whatsappUri = Uri.parse('https://wa.me/996700636676').replace(
   },
 );
 
+static final Uri instagramUri = Uri.parse('https://www.instagram.com/hit_travelkg');
+
 }
