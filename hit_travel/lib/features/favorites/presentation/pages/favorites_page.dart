@@ -21,6 +21,7 @@ class FavoritesPage extends StatelessWidget {
         centerTitle: true,
         backgroundColor: AppTheme.blueColor,
         actions: [
+          /// transparent button for navigating to logs monitor screen
           IconButton(
             onPressed: () {
               Navigator.of(context).push(
@@ -30,7 +31,7 @@ class FavoritesPage extends StatelessWidget {
                 ),
               );
             },
-            icon: Icon(Icons.bug_report_outlined), color: Colors.white,
+            icon: Icon(Icons.bug_report_outlined), color: Colors.transparent,
           ),
         ],
       ),

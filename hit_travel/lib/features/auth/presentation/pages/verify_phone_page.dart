@@ -47,7 +47,7 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
 
         if (isSuccess) {
           if (mounted) {
-            // Сохраняем токен
+            // saving token
             final String token = response.data['token'];
             await serviceLocator<AuthCacheManager>().saveToken(token);
 
@@ -55,7 +55,7 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
               const SnackBar(content: Text('Номер успешно подтвержден!'), backgroundColor: Colors.green),
             );
 
-            // Возвращаемся в самый корень (на RootPage)
+            // return to RootPage
             Navigator.of(context).popUntil((route) => route.isFirst);
           }
         } else {
@@ -73,7 +73,6 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
     setState(() => _isLoading = true);
 
     final requestData = {
-
       "phone": widget.phoneNumber,
     };
 

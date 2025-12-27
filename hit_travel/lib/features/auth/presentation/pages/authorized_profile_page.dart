@@ -45,9 +45,7 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     // Маппинг данных из ответа API
@@ -88,12 +86,20 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
                               clipBehavior: Clip.antiAlias,
                               child: photoUrl != null && photoUrl.isNotEmpty
                                   ? Image.network(
-                                photoUrl,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Icon(Icons.person, size: 40, color: AppTheme.blueColor),
-                              )
-                                  : Icon(Icons.person, size: 40, color: AppTheme.blueColor),
+                                      photoUrl,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) => Icon(
+                                            Icons.person,
+                                            size: 40,
+                                            color: AppTheme.blueColor,
+                                          ),
+                                    )
+                                  : Icon(
+                                      Icons.person,
+                                      size: 40,
+                                      color: AppTheme.blueColor,
+                                    ),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
@@ -126,7 +132,11 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
                                 color: Colors.white.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: const Icon(Icons.edit, color: Colors.white, size: 20),
+                              child: const Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                                size: 20,
+                              ),
                             ),
                           ],
                         ),
@@ -163,26 +173,43 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Доступные бонусы', style: TextStyle(fontSize: 16, color: Colors.black87)),
+                  const Text(
+                    'Доступные бонусы',
+                    style: TextStyle(fontSize: 16, color: Colors.black87),
+                  ),
                   const SizedBox(height: 8),
                   RichText(
                     text: TextSpan(
                       children: [
                         TextSpan(
                           text: '$bonuses ',
-                          style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.black),
+                          style: const TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
                         const TextSpan(
                           text: 'С',
-                          style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.black, decoration: TextDecoration.underline),
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-              Image.asset('assets/gift.png', width: 80, height: 80,
-                  errorBuilder: (_, __, ___) => const Text('🎁', style: TextStyle(fontSize: 50))),
+              Image.asset(
+                'assets/gift.png',
+                width: 80,
+                height: 80,
+                errorBuilder: (_, __, ___) =>
+                    const Text('🎁', style: TextStyle(fontSize: 50)),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -199,28 +226,59 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
   Widget _buildMenu() {
     return Column(
       children: [
-        _buildMenuItem(icon: Icons.shopping_bag_outlined, title: 'Мои заказы', onTap: () {}),
-        _buildDivider(),
-        _buildMenuItem(icon: Icons.notifications_outlined, title: 'Уведомления', onTap: () {}),
-        _buildDivider(),
-        _buildMenuItem(icon: Icons.contacts_outlined, title: 'Контакты', onTap: () {}),
-        _buildDivider(),
-        _buildMenuItem(icon: Icons.lock_outline, title: 'Изменить пароль', onTap: () {}),
-        _buildDivider(),
-        _buildMenuItem(icon: Icons.help_outline, title: 'Часто задаваемые вопросы', onTap: () {}),
-        _buildDivider(),
         _buildMenuItem(
-            icon: Icons.language,
-            title: 'Язык',
-            trailing: const Text('Русский', style: TextStyle(fontSize: 16, color: Colors.black54)),
-            onTap: () {}
+          icon: Icons.shopping_bag_outlined,
+          title: 'Мои заказы',
+          onTap: () {},
         ),
         _buildDivider(),
         _buildMenuItem(
-            icon: Icons.logout,
-            title: 'Выйти из аккаунта',
-            titleColor: Colors.red,
-            onTap: () async => await serviceLocator<AuthCacheManager>().logout()
+          icon: Icons.notifications_outlined,
+          title: 'Уведомления',
+          onTap: () {},
+        ),
+        _buildDivider(),
+        _buildMenuItem(
+          icon: Icons.contacts_outlined,
+          title: 'Контакты',
+          onTap: () {},
+        ),
+        _buildDivider(),
+        _buildMenuItem(
+          icon: Icons.lock_outline,
+          title: 'Изменить пароль',
+          onTap: () {},
+        ),
+        _buildDivider(),
+        _buildMenuItem(
+          icon: Icons.help_outline,
+          title: 'Часто задаваемые вопросы',
+          onTap: () {},
+        ),
+        _buildDivider(),
+        _buildMenuItem(
+          icon: Icons.language,
+          title: 'Язык',
+          trailing: const Text(
+            'Русский',
+            style: TextStyle(fontSize: 16, color: Colors.black54),
+          ),
+          onTap: () {},
+        ),
+        _buildDivider(),
+        _buildMenuItem(
+          icon: Icons.logout,
+          title: 'Выйти из аккаунта',
+          titleColor: Colors.red,
+          onTap: () async {
+            await serviceLocator<AuthCacheManager>().logout();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Выход успешно выполнен!"),
+                backgroundColor: Colors.green,
+              ),
+            );
+          },
         ),
         const SizedBox(height: 40),
       ],
@@ -243,7 +301,13 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
             Icon(icon, size: 24, color: titleColor ?? Colors.black87),
             const SizedBox(width: 16),
             Expanded(
-              child: Text(title, style: TextStyle(fontSize: 16, color: titleColor ?? Colors.black87)),
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: titleColor ?? Colors.black87,
+                ),
+              ),
             ),
             if (trailing != null) trailing,
           ],
@@ -252,5 +316,6 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
     );
   }
 
-  Widget _buildDivider() => const Divider(height: 1, thickness: 1, indent: 24, endIndent: 24);
+  Widget _buildDivider() =>
+      const Divider(height: 1, thickness: 1, indent: 24, endIndent: 24);
 }
