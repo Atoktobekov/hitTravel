@@ -45,5 +45,19 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	 <!-- Requested permissions -->
+    	<key>LSApplicationQueriesSchemes</key>
+    	<array>
+    		<string>sms</string>
+    		<string>tel</string>
+    		<string>whatsapp</string>
+    		<string>https</string>
+    		<string>http</string>
+    	</array>
+    	<key>NSPhotoLibraryUsageDescription</key>
+    	<string>Приложению нужен доступ к галерее, чтобы вы могли выбрать фото профиля.</string>
+    	<key>NSCameraUsageDescription</key>
+    	<string>Приложению нужен доступ к камере, чтобы вы могли сделать фото для профиля.</string>
+        <!-- End of requested permissions -->
 </dict>
 </plist>
