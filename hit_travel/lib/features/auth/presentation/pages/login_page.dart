@@ -7,6 +7,7 @@ import 'package:hit_travel/core/di/locator.dart';
 import 'package:hit_travel/core/network/auth_cache_manager.dart';
 import 'package:hit_travel/core/network/dio_client.dart';
 import 'package:hit_travel/core/theme/theme.dart';
+import 'package:hit_travel/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:hit_travel/features/auth/presentation/pages/registration_page.dart';
 import 'package:hit_travel/features/auth/presentation/widgets/auth_text_field.dart';
 
@@ -142,7 +143,13 @@ class _LoginPageState extends State<LoginPage> {
               // Forgot Password Link
               GestureDetector(
                 onTap: () {
-                  // TODO Handle forgot password
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      fullscreenDialog: true,
+                      builder: (context) => const ForgotPasswordPage(),
+                    ),
+                  );
                 },
                 child: const Text(
                   'Забыли пароль?',

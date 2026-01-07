@@ -39,4 +39,11 @@ class ApiService {
       options: Options(headers: {'Authorization': 'Token $token'}),
     );
   }
+
+  Future<Response> requestPasswordReset(String email) async {
+    return await _dio.post(
+      '/auth/password-reset/request',
+      data: {'email': email},
+    );
+  }
 }
