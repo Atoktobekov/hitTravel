@@ -46,4 +46,27 @@ class ApiService {
       data: {'email': email},
     );
   }
+
+  Future<Response> changePassword({
+    required String oldPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    final token = serviceLocator<AuthCacheManager>().getToken();
+    return await _dio.post(
+      '/auth/new-password',
+      data: {
+        'old_password': oldPassword,
+        'new_password': newPassword,
+        'confirm_password': confirmPassword,
+      },
+      options: Options(headers: {
+        'Authorization': 'Token $token',
+      }),
+    );
+  }
+
+  Future<Response> getFaq() async {
+    return await _dio.get('/faq');
+  }
 }
