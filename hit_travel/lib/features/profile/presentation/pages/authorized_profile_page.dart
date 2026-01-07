@@ -211,7 +211,7 @@ class _AuthorizedProfilePageState extends State<AuthorizedProfilePage> {
                         style: TextStyle(
                           fontSize: 14,
                           color: Color(0xFF0A84FF),
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),

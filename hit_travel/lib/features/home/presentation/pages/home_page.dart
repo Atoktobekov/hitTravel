@@ -277,7 +277,7 @@ class _HomePageState extends State<HomePage> {
                     Text(
                       isCharterOnly ? 'Включено' : 'Выключено',
                       style: TextStyle(
-                        fontSize: 15.sp,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -330,7 +330,7 @@ class _HomePageState extends State<HomePage> {
                 child: Text(
                   'Найти туры',
                   style: TextStyle(
-                    fontSize: 15.sp,
+                    fontSize: 17.sp,
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
@@ -363,7 +363,7 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: 2.h),
               Text(
                 value,
-                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
               ),
             ],
           ),
@@ -382,12 +382,12 @@ class _HomePageState extends State<HomePage> {
           children: [
             Text(
               label,
-              style: TextStyle(fontSize: 12.sp, color: Colors.grey.shade500),
+              style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade500),
             ),
             SizedBox(height: 2.h),
             Text(
               value,
-              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
             ),
           ],
         ),

@@ -38,7 +38,7 @@ class AppTheme {
   static final textFieldText = TextStyle(
     fontFamily: 'Gilroy',
     color: Colors.black54,
-    fontSize: 14.sp,
+    fontSize: 16.sp,
   );
 
   static final elevatedButtonInAuth = ElevatedButton.styleFrom(

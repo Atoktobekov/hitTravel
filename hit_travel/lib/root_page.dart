@@ -60,6 +60,8 @@ class _RootPageState extends State<RootPage> {
         currentIndex: _currentIndex,
         onTap: _onTap,
         type: BottomNavigationBarType.fixed,
+        selectedFontSize: 14,
+        unselectedFontSize: 14,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Поиск'),
           BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: 'Избранные'),

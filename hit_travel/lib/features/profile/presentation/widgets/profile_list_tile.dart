@@ -29,7 +29,7 @@ class ProfileListTile extends StatelessWidget {
         child: Text(
           title,
           style: TextStyle(
-            fontSize: 13.sp,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w600,
             color: textColor ?? Colors.black,
           ),
